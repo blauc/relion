@@ -2509,6 +2509,8 @@ void storeWeightedSums(OptimisationParamters &op, SamplingParameters &sp,
 			DEBUG_HANDLE_ERROR(cudaStreamSynchronize(cudaMLO->classStreams[exp_iclass]));
 		DEBUG_HANDLE_ERROR(cudaStreamSynchronize(cudaStreamPerThread));
 
+		std::vector<XFLOAT> class_sum(baseMLO->mymodel.nr_classes, 0);
+
 		for (int exp_iclass = sp.iclass_min; exp_iclass <= sp.iclass_max; exp_iclass++)
 		{
 			if((baseMLO->mymodel.pdf_class[exp_iclass] == 0.) || (ProjectionData[ipart].class_entries[exp_iclass] == 0))
@@ -2560,12 +2562,26 @@ void storeWeightedSums(OptimisationParamters &op, SamplingParameters &sp,
 				sorted_weights[classPos+i] = -999.;
 
 			for (long unsigned i = 0; i < thisClassFinePassWeights.weights.getSize(); i++)
+			{
 				sorted_weights[classPos+(thisClassFinePassWeights.rot_idx[i]) * translation_num + thisClassFinePassWeights.trans_idx[i] ]
 								= thisClassFinePassWeights.weights[i];
-
+				class_sum[exp_iclass] += thisClassFinePassWeights.weights[i];
+			}
 			classPos+=orientation_num*translation_num;
 			CTOC(cudaMLO->timer,"pre_wavg_map");
 		}
+		//Extra out put
+ 		XFLOAT local_norm = (XFLOAT)op.avg_diff2[ipart];
+ 		if (local_norm - op.min_diff2[ipart] > 50)
+ 			local_norm = op.min_diff2[ipart] + 50;
+ 		std::ostringstream ss;
+ 		ss << sp.current_img << " ";
+ 		ss << op.sum_weight[ipart] << " ";
+ 		ss << local_norm << " ";
+ 		for (int i = 0; i < class_sum.size(); i++)
+ 			ss << " " << class_sum[i];
+ 		baseMLO->extra_data_file.add(ss.str());
+
 		sorted_weights.put_on_device();
 
 		// These syncs are necessary (for multiple ranks on the same GPU), and (assumed) low-cost.
@@ -3325,4 +3341,3 @@ void MlOptimiserCuda::doThreadExpectationSomeParticles(int thread_id)
 		baseMLO->timer.toc(baseMLO->TIMING_ESP_THR);
 #endif
 }
-

@@ -2363,6 +2363,8 @@ void MlOptimiser::iterate()
 
     } // end loop iters
 
+	extra_data_file.write();
+
 	// delete threads etc
 	iterateWrapUp();
 }
@@ -8476,4 +8478,3 @@ void MlOptimiser::getMetaAndImageDataSubset(int first_ori_particle_id, int last_
     }
 
 }
-

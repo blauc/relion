@@ -31,6 +31,7 @@
 #include "src/healpix_sampling.h"
 #include "src/helix.h"
 #include "src/local_symmetry.h"
+#include "src/extra_output.h"
 
 #define ML_SIGNIFICANT_WEIGHT 1.e-8
 #define METADATA_LINE_LENGTH METADATA_LINE_LENGTH_ALL
@@ -96,6 +97,8 @@ public:
 	std::vector<int> cudaOptimiserDeviceMap;
 	std::vector<void*> cudaOptimisers;
 	std::vector<void*> cudaDeviceBundles;
+
+	ExtraOutput extra_data_file;
 
 	// I/O Parser
 	IOParser parser;
