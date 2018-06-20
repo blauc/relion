@@ -43,13 +43,13 @@ public:
 		add(oss.str());
 	}
 
-	void write()
+	void write(FileName fn_root)
 	{
 		if (!do_extra_output || extra_output.size() == 0)
 			return;
 
 		std::ofstream f;
-		f.open(output_file.c_str());
+		f.open((fn_root + output_file).c_str());
 		for (unsigned i = 0; i < extra_output.size(); i ++)
 			f << extra_output[i] << std::endl;
 		f.close();
