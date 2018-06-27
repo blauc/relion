@@ -856,6 +856,8 @@ void MlOptimiser::write(bool do_write_sampling, bool do_write_data, bool do_writ
 	bool do_write_bild = !(do_skip_align || do_skip_rotate);
 	int writeout_subset_start = 1;
 
+	extra_data_file.write(fn_root);
+
 	if (iter > 0 && nr_subsets > 1 && subset != nr_subsets)
 	{
 		if ((subset % write_every_subset) == 0)
@@ -2362,8 +2364,6 @@ void MlOptimiser::iterate()
 		}
 
     } // end loop iters
-
-	extra_data_file.write();
 
 	// delete threads etc
 	iterateWrapUp();
