@@ -46,6 +46,7 @@ public:
 			f << *extraOutputLine << std::endl;
 		}
 		f.close();
+		extraOutput_.clear();
 	}
 };
 
