@@ -1300,10 +1300,6 @@ void MlOptimiser::initialiseGeneral(int rank)
     if (!exists(fn_dir))
     	REPORT_ERROR("ERROR: output directory does not exist!");
 
-    // Just die if trying to use GPUs and skipping alignments
-    if (do_skip_align && do_gpu)
-    	REPORT_ERROR("ERROR: you cannot use GPUs when skipping alignments");
-
 	if (do_always_cc)
 		do_calculate_initial_sigma_noise = false;
 
