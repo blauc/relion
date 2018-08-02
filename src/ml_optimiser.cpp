@@ -1300,6 +1300,10 @@ void MlOptimiser::initialiseGeneral(int rank)
     if (!exists(fn_dir))
     	REPORT_ERROR("ERROR: output directory does not exist!");
 
+    // Just die if trying to use GPUs and skipping alignments
+    if (do_skip_align && do_gpu)
+    	REPORT_ERROR("ERROR: you cannot use GPUs when skipping alignments");
+
 	if (do_always_cc)
 		do_calculate_initial_sigma_noise = false;
 
@@ -7257,6 +7261,35 @@ void MlOptimiser::storeWeightedSums(long int my_ori_particle, int ibody, int exp
 		// Also store sum of Pmax
 		thr_sum_Pmax += DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_PMAX);
 
+		//Extra out put
+		XFLOAT local_norm = (XFLOAT)exp_min_diff2[ipart];
+		if (local_norm - exp_min_diff2[ipart] > 50)
+			local_norm = exp_min_diff2[ipart] + 50;
+
+
+		FileName fn_img;
+
+		// Get the right line in the exp_fn_img strings (also exp_fn_recimg and exp_fn_ctfs)
+		int istop = 0;
+		for (long int ii = exp_my_first_ori_particle; ii < my_ori_particle; ii++)
+			istop += mydata.ori_particles[ii].particles_id.size();
+		istop += ipart;
+
+		if (!mydata.getImageNameOnScratch(part_id, fn_img))
+		{
+			std::istringstream split(exp_fn_img);
+			for (int i = 0; i <= istop; i++)
+				getline(split, fn_img);
+		}
+
+		std::ostringstream ss;
+		ss << fn_img << " " ;
+		ss << exp_sum_weight[ipart] << " ";
+		ss << local_norm << " ";
+		for (int i = 0; i < mymodel.nr_classes; i++)
+			ss << " " << thr_wsum_pdf_class[i];
+		extra_data_file.add(ss.str());
+
 	}
 
 	// Now, inside a global_mutex, update the other weighted sums among all threads
@@ -8474,3 +8507,4 @@ void MlOptimiser::getMetaAndImageDataSubset(int first_ori_particle_id, int last_
     }
 
 }
+
