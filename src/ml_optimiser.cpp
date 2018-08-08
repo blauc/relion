@@ -1324,7 +1324,7 @@ void MlOptimiser::initialiseGeneral(int rank)
 		}
 		exit(0);
 	}
-
+	extra_data_file.setRank(rank);
 	// If we are not continuing an old run, now read in the data and the reference images
 	if (iter == 0)
 	{
@@ -8507,4 +8507,3 @@ void MlOptimiser::getMetaAndImageDataSubset(int first_ori_particle_id, int last_
     }
 
 }
-

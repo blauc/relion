@@ -14,12 +14,13 @@ class ExtraOutput
 {
 
 private:
-	FileName outputFile_;
+	const FileName outputFile_;
 	std::vector<std::string> extraOutput_;
+	int rank_;
 
 public:
 	ExtraOutput():
-		outputFile_("extra_output.dat"), extraOutput_()
+		outputFile_("extra_output.dat"), extraOutput_(), rank_(0)
 	{}
 
 	void add(std::string str)
@@ -37,10 +38,17 @@ public:
 		add(oss.str());
 	}
 
+	void setRank(int rank)
+	{
+		rank_ = rank;
+	}
+
 	void write(FileName fn_root)
 	{
 		std::ofstream f;
-		f.open((fn_root + outputFile_).c_str(), std::ios::out);
+		std::ostringstream oss;
+		oss << fn_root << "_" << rank_ << "_" << outputFile_;
+		f.open(oss.str().c_str(), std::ios::out);
 		for (std::vector<std::string>::iterator extraOutputLine = extraOutput_.begin(); extraOutputLine!=extraOutput_.end(); ++extraOutputLine)
 		{
 			f << *extraOutputLine << std::endl;
