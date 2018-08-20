@@ -23,7 +23,7 @@ public:
 		outputFile_("extra_output.dat"), extraOutput_(), rank_(0)
 	{}
 
-	void add(std::string str)
+	void add(const std::string & str)
 	{
 		pthread_mutex_lock(&extra_output_push_back);
 		extraOutput_.push_back(str);
@@ -43,17 +43,17 @@ public:
 		rank_ = rank;
 	}
 
-	void write(FileName fn_root)
+	void write(FileName fn_root, int iteration)
 	{
-		std::ofstream f;
+		std::ofstream outputFileStream;
 		std::ostringstream oss;
-		oss << fn_root << "_" << rank_ << "_" << outputFile_;
-		f.open(oss.str().c_str(), std::ios::out);
+		oss << fn_root << "_it" << iteration << "_" << rank_ << outputFile_;
+		outputFileStream.open(oss.str().c_str(), std::ios::out);
 		for (std::vector<std::string>::iterator extraOutputLine = extraOutput_.begin(); extraOutputLine!=extraOutput_.end(); ++extraOutputLine)
 		{
-			f << *extraOutputLine << std::endl;
+			outputFileStream << *extraOutputLine << std::endl;
 		}
-		f.close();
+		outputFileStream.close();
 		extraOutput_.clear();
 	}
 };

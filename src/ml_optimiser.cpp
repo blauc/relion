@@ -841,6 +841,10 @@ void MlOptimiser::read(FileName fn_in, int rank)
 
 }
 
+void MlOptimiser::writeExtraOutput()
+{
+	extra_data_file.write(fn_out, iter);
+}
 
 void MlOptimiser::write(bool do_write_sampling, bool do_write_data, bool do_write_optimiser, bool do_write_model, int random_subset)
 {
@@ -855,8 +859,6 @@ void MlOptimiser::write(bool do_write_sampling, bool do_write_data, bool do_writ
 	fn_root2 = fn_root;
 	bool do_write_bild = !(do_skip_align || do_skip_rotate);
 	int writeout_subset_start = 1;
-
-	extra_data_file.write(fn_root);
 
 	if (iter > 0 && nr_subsets > 1 && subset != nr_subsets)
 	{
@@ -2364,6 +2366,8 @@ void MlOptimiser::iterate()
 		}
 
     } // end loop iters
+
+	writeExtraOutput();
 
 	// delete threads etc
 	iterateWrapUp();
