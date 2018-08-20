@@ -3070,6 +3070,7 @@ void MlOptimiserMpi::iterate()
 			else if (node->isMaster())
 				// The master only writes the data file (he's the only one who has and manages these data!)
 				MlOptimiser::write(DONT_WRITE_SAMPLING, DO_WRITE_DATA, DONT_WRITE_OPTIMISER, DONT_WRITE_MODEL, node->rank);
+            MlOptimiser::writeExtraOutput();
 
 			if (do_auto_refine && has_converged)
 			{

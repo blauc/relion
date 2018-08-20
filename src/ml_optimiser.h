@@ -930,6 +930,8 @@ public:
 	// Get metadata array of a subset of particles from the experimental model
 	void getMetaAndImageDataSubset(int first_ori_particle_id, int last_ori_particle_id, bool do_also_imagedata = true);
 
+	// Write the extra output to file
+	void writeExtraOutput();
 };
 
 // Global call to threaded core of doThreadExpectationSomeParticles
